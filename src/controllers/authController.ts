@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import prisma from "../lib/prisma"; // Updated to use global instance
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import prisma from "../lib/prisma"; // Updated to use global instance
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
