@@ -18,7 +18,14 @@ export const register = async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
     expiresIn: "1d",
   });
-  res.json({ user, token });
+  res.json({
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    },
+    token,
+  });
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -34,5 +41,12 @@ export const login = async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
     expiresIn: "1d",
   });
-  res.json({ user, token });
+  res.json({
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    },
+    token,
+  });
 };

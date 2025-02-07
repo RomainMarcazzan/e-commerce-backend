@@ -6,16 +6,16 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/", async (req: Request, res: Response) => {
-  res.send("Hello from Express and Prisma");
+app.get("/v1/health", async (req: Request, res: Response) => {
+  res.send("API is running");
 });
 
 // Mount routes
-app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
+app.use("/v1/auth", authRoutes);
+app.use("/v1/users", userRoutes);
 // ...additional routes and middleware...
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
