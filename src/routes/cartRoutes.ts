@@ -15,9 +15,21 @@ const router = Router();
  * /cart:
  *   get:
  *     summary: Retrieve a user's cart
+ *     description: Get the current user's cart along with items and product details.
  *     responses:
  *       200:
- *         description: Cart details
+ *         description: Cart details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 cart:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated or cart not found
  */
 router.get("/", authenticate, getCart);
 
@@ -26,9 +38,34 @@ router.get("/", authenticate, getCart);
  * /cart/item:
  *   post:
  *     summary: Add an item to the cart
+ *     description: Add a new item into the current user's cart.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *                 example: "12345"
+ *               quantity:
+ *                 type: number
+ *                 example: 2
  *     responses:
  *       201:
- *         description: Cart item added
+ *         description: Cart item added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 cartItem:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
  */
 router.post("/item", authenticate, addCartItem);
 
@@ -37,15 +74,40 @@ router.post("/item", authenticate, addCartItem);
  * /cart/item/{id}:
  *   patch:
  *     summary: Update a cart item
+ *     description: Update the quantity of an existing cart item.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: The cart item id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *                 example: 3
  *     responses:
  *       200:
- *         description: Cart item updated
+ *         description: Cart item updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 cartItem:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       404:
+ *         description: Cart item not found or access denied
  */
 router.patch("/item/:id", authenticate, updateCartItem);
 
@@ -54,15 +116,30 @@ router.patch("/item/:id", authenticate, updateCartItem);
  * /cart/item/{id}:
  *   delete:
  *     summary: Remove an item from the cart
+ *     description: Remove a specific item from the user's cart.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: The cart item id
  *     responses:
  *       200:
- *         description: Cart item removed
+ *         description: Cart item removed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 cartItem:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       404:
+ *         description: Cart item not found or access denied
  */
 router.delete("/item/:id", authenticate, removeCartItem);
 
@@ -71,9 +148,19 @@ router.delete("/item/:id", authenticate, removeCartItem);
  * /cart/clear:
  *   delete:
  *     summary: Clear the entire cart
+ *     description: Remove all items from the current user's cart.
  *     responses:
  *       200:
- *         description: Cart cleared
+ *         description: Cart cleared successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: User not authenticated
  */
 router.delete("/clear", authenticate, clearCart);
 

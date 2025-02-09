@@ -15,9 +15,23 @@ const router = Router();
  * /review:
  *   get:
  *     summary: Retrieve a list of reviews
+ *     description: Get a list of all reviews.
  *     responses:
  *       200:
- *         description: A list of reviews
+ *         description: A list of reviews retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 reviews:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: User not authenticated
  */
 router.get("/", getReviews);
 
@@ -26,15 +40,30 @@ router.get("/", getReviews);
  * /review/{id}:
  *   get:
  *     summary: Retrieve a review by ID
+ *     description: Get the details of a specific review by its ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: The review ID
  *     responses:
  *       200:
- *         description: Review details
+ *         description: Review details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 review:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       404:
+ *         description: Review not found
  */
 router.get("/:id", getReviewById);
 
@@ -43,9 +72,42 @@ router.get("/:id", getReviewById);
  * /review:
  *   post:
  *     summary: Create a new review
+ *     description: Create a new review with the provided details.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: "user123"
+ *               productId:
+ *                 type: string
+ *                 example: "product123"
+ *               rating:
+ *                 type: number
+ *                 example: 5
+ *               comment:
+ *                 type: string
+ *                 example: "Great product!"
  *     responses:
  *       201:
- *         description: Review created
+ *         description: Review created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 review:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       400:
+ *         description: Invalid input
  */
 router.post("/", authenticate, createReview);
 
@@ -54,15 +116,43 @@ router.post("/", authenticate, createReview);
  * /review/{id}:
  *   patch:
  *     summary: Update an existing review
+ *     description: Update the details of an existing review by its ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: The review ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: number
+ *                 example: 4
+ *               comment:
+ *                 type: string
+ *                 example: "Good product!"
  *     responses:
  *       200:
- *         description: Review updated
+ *         description: Review updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 review:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       404:
+ *         description: Review not found
  */
 router.patch("/:id", authenticate, updateReview);
 
@@ -71,15 +161,30 @@ router.patch("/:id", authenticate, updateReview);
  * /review/{id}:
  *   delete:
  *     summary: Delete a review by ID
+ *     description: Delete a specific review by its ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: The review ID
  *     responses:
  *       200:
- *         description: Review deleted
+ *         description: Review deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 review:
+ *                   type: object
+ *       401:
+ *         description: User not authenticated
+ *       404:
+ *         description: Review not found
  */
 router.delete("/:id", authenticate, deleteReview);
 
