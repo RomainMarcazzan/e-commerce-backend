@@ -1,16 +1,19 @@
 import { Router } from "express";
 import {
   getCart,
-  addItemToCart,
+  addCartItem,
   updateCartItem,
   removeCartItem,
-} from "../controllers/cartController";
+  clearCart,
+} from "../controllers/cartControllers";
+import { authenticate } from "../middlewares/authenticateMiddleware";
 
 const router = Router();
 
-router.get("/:userId", getCart);
-router.post("/:userId/item", addItemToCart);
-router.put("/:userId/item/:itemId", updateCartItem);
-router.delete("/:userId/item/:itemId", removeCartItem);
+router.get("/", authenticate, getCart);
+router.post("/item", authenticate, addCartItem);
+router.patch("/item/:id", authenticate, updateCartItem);
+router.delete("/item/:id", authenticate, removeCartItem);
+router.delete("/clear", authenticate, clearCart);
 
 export default router;
