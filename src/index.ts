@@ -8,6 +8,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 import { errorHandler } from "./middlewares/errorHandlerMiddleware";
+import { setupSwagger } from "./config/swagger";
 
 const app = express();
 app.use(cors());
@@ -26,9 +27,12 @@ app.use("/v1/category", categoryRoutes);
 app.use("/v1/product", productRoutes);
 app.use("/v1/review", reviewRoutes);
 
+setupSwagger(app);
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Swagger docs available at http://localhost:${PORT}/v1/docs`);
 });
