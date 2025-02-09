@@ -11,9 +11,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Categories
+ *   description: Category management and retrieval
+ */
+
+/**
+ * @swagger
  * /category:
  *   get:
  *     summary: Retrieve a list of categories
+ *     tags: [Categories]
  *     description: Get a list of all categories.
  *     responses:
  *       200:
@@ -39,6 +47,7 @@ router.get("/", getCategories);
  * /category/{id}:
  *   get:
  *     summary: Retrieve a category by ID
+ *     tags: [Categories]
  *     description: Get the details of a specific category by its ID.
  *     parameters:
  *       - in: path
@@ -71,6 +80,7 @@ router.get("/:id", getCategoryById);
  * /category:
  *   post:
  *     summary: Create a new category
+ *     tags: [Categories]
  *     description: Create a new category with the provided details.
  *     requestBody:
  *       required: true
@@ -106,6 +116,7 @@ router.post("/", createCategory);
  * /category/{id}:
  *   patch:
  *     summary: Update an existing category
+ *     tags: [Categories]
  *     description: Update the details of an existing category by its ID.
  *     parameters:
  *       - in: path
@@ -148,6 +159,7 @@ router.patch("/:id", updateCategory);
  * /category/{id}:
  *   delete:
  *     summary: Delete a category by ID
+ *     tags: [Categories]
  *     description: Delete a specific category by its ID.
  *     parameters:
  *       - in: path

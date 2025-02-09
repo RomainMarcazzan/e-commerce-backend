@@ -10,12 +10,19 @@ import { authenticate } from "../middlewares/authenticateMiddleware";
 
 const router = Router();
 
-// Swagger: Retrieve a list of products
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: Product management and retrieval
+ */
+
 /**
  * @swagger
  * /product:
  *   get:
  *     summary: Retrieve a list of products
+ *     tags: [Products]
  *     description: Get a list of all products.
  *     responses:
  *       200:
@@ -36,12 +43,12 @@ const router = Router();
  */
 router.get("/", getProducts);
 
-// Swagger: Retrieve a product by ID
 /**
  * @swagger
  * /product/{id}:
  *   get:
  *     summary: Retrieve a product by ID
+ *     tags: [Products]
  *     description: Get the details of a specific product by its ID.
  *     parameters:
  *       - in: path
@@ -69,12 +76,12 @@ router.get("/", getProducts);
  */
 router.get("/:id", getProductById);
 
-// Swagger: Create a new product
 /**
  * @swagger
  * /product:
  *   post:
  *     summary: Create a new product
+ *     tags: [Products]
  *     description: Create a new product with the provided details.
  *     requestBody:
  *       required: true
@@ -120,12 +127,12 @@ router.get("/:id", getProductById);
  */
 router.post("/", authenticate, createProduct);
 
-// Swagger: Update an existing product
 /**
  * @swagger
  * /product/{id}:
  *   patch:
  *     summary: Update an existing product
+ *     tags: [Products]
  *     description: Update the details of an existing product by its ID.
  *     parameters:
  *       - in: path
@@ -178,12 +185,12 @@ router.post("/", authenticate, createProduct);
  */
 router.patch("/:id", authenticate, updateProduct);
 
-// Swagger: Delete a product by ID
 /**
  * @swagger
  * /product/{id}:
  *   delete:
  *     summary: Delete a product by ID
+ *     tags: [Products]
  *     description: Delete a specific product by its ID.
  *     parameters:
  *       - in: path

@@ -12,9 +12,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Orders
+ *   description: Order management and retrieval
+ */
+
+/**
+ * @swagger
  * /order:
  *   get:
  *     summary: Retrieve a list of orders
+ *     tags: [Orders]
  *     description: Get a list of all orders for the authenticated user.
  *     responses:
  *       200:
@@ -40,6 +48,7 @@ router.get("/", authenticate, getOrders);
  * /order/{id}:
  *   get:
  *     summary: Retrieve an order by ID
+ *     tags: [Orders]
  *     description: Get the details of a specific order by its ID.
  *     parameters:
  *       - in: path
@@ -72,6 +81,7 @@ router.get("/:id", authenticate, getOrderById);
  * /order:
  *   post:
  *     summary: Create a new order
+ *     tags: [Orders]
  *     description: Create a new order with the provided details.
  *     requestBody:
  *       required: true
@@ -127,6 +137,7 @@ router.post("/", authenticate, createOrder);
  * /order/{id}:
  *   patch:
  *     summary: Update an order by ID
+ *     tags: [Orders]
  *     description: Update the details of an existing order by its ID.
  *     parameters:
  *       - in: path
@@ -172,6 +183,7 @@ router.patch("/:id", authenticate, updateOrder);
  * /order/{id}:
  *   delete:
  *     summary: Delete an order by ID
+ *     tags: [Orders]
  *     description: Delete a specific order by its ID.
  *     parameters:
  *       - in: path

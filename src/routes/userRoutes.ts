@@ -10,12 +10,19 @@ import { authenticate } from "../middlewares/authenticateMiddleware";
 
 const router = Router();
 
-// Swagger: Retrieve a list of users
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management and retrieval
+ */
+
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Retrieve a list of users
+ *     tags: [Users]
  *     description: Get a list of all users.
  *     responses:
  *       200:
@@ -31,12 +38,12 @@ const router = Router();
  */
 router.get("/", authenticate, getUsers);
 
-// Swagger: Retrieve a user by ID
 /**
  * @swagger
  * /users/{id}:
  *   get:
  *     summary: Retrieve a user by ID
+ *     tags: [Users]
  *     description: Get the details of a specific user by their ID.
  *     parameters:
  *       - in: path
@@ -64,12 +71,12 @@ router.get("/", authenticate, getUsers);
  */
 router.get("/:id", authenticate, getUserById);
 
-// Swagger: Create a new user
 /**
  * @swagger
  * /users:
  *   post:
  *     summary: Create a new user
+ *     tags: [Users]
  *     description: Create a new user with the provided details.
  *     requestBody:
  *       required: true
@@ -112,12 +119,12 @@ router.get("/:id", authenticate, getUserById);
  */
 router.post("/", createUser);
 
-// Swagger: Update an existing user
 /**
  * @swagger
  * /users/{id}:
  *   patch:
  *     summary: Update an existing user
+ *     tags: [Users]
  *     description: Update the details of an existing user by their ID.
  *     parameters:
  *       - in: path
@@ -165,12 +172,12 @@ router.post("/", createUser);
  */
 router.patch("/:id", authenticate, updateUser);
 
-// Swagger: Delete a user by ID
 /**
  * @swagger
  * /users/{id}:
  *   delete:
  *     summary: Delete a user by ID
+ *     tags: [Users]
  *     description: Delete a specific user by their ID.
  *     parameters:
  *       - in: path

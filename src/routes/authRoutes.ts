@@ -10,9 +10,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication and authorization
+ */
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     summary: Register a new user
+ *     tags: [Auth]
  *     description: Register a new user with the required details (email, password, etc.)
  *     requestBody:
  *       required: true
@@ -60,6 +68,7 @@ router.post("/register", register);
  * /auth/login:
  *   post:
  *     summary: Log in a user
+ *     tags: [Auth]
  *     description: Authenticate a user with email and password.
  *     requestBody:
  *       required: true
@@ -100,6 +109,7 @@ router.post("/login", login);
  * /auth/refresh:
  *   post:
  *     summary: Refresh authentication token
+ *     tags: [Auth]
  *     description: Use the refresh token to obtain a new access token.
  *     requestBody:
  *       required: true
@@ -131,6 +141,7 @@ router.post("/refresh", refresh);
  * /auth/logout:
  *   post:
  *     summary: Log out a user
+ *     tags: [Auth]
  *     description: Logs out the user by invalidating their refresh token.
  *     requestBody:
  *       required: true

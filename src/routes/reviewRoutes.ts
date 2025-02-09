@@ -12,9 +12,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Reviews
+ *   description: Review management and retrieval
+ */
+
+/**
+ * @swagger
  * /review:
  *   get:
  *     summary: Retrieve a list of reviews
+ *     tags: [Reviews]
  *     description: Get a list of all reviews.
  *     responses:
  *       200:
@@ -40,6 +48,7 @@ router.get("/", getReviews);
  * /review/{id}:
  *   get:
  *     summary: Retrieve a review by ID
+ *     tags: [Reviews]
  *     description: Get the details of a specific review by its ID.
  *     parameters:
  *       - in: path
@@ -72,6 +81,7 @@ router.get("/:id", getReviewById);
  * /review:
  *   post:
  *     summary: Create a new review
+ *     tags: [Reviews]
  *     description: Create a new review with the provided details.
  *     requestBody:
  *       required: true
@@ -116,6 +126,7 @@ router.post("/", authenticate, createReview);
  * /review/{id}:
  *   patch:
  *     summary: Update an existing review
+ *     tags: [Reviews]
  *     description: Update the details of an existing review by its ID.
  *     parameters:
  *       - in: path
@@ -161,6 +172,7 @@ router.patch("/:id", authenticate, updateReview);
  * /review/{id}:
  *   delete:
  *     summary: Delete a review by ID
+ *     tags: [Reviews]
  *     description: Delete a specific review by its ID.
  *     parameters:
  *       - in: path

@@ -12,9 +12,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Cart
+ *   description: Cart management and retrieval
+ */
+
+/**
+ * @swagger
  * /cart:
  *   get:
  *     summary: Retrieve a user's cart
+ *     tags: [Cart]
  *     description: Get the current user's cart along with items and product details.
  *     responses:
  *       200:
@@ -38,6 +46,7 @@ router.get("/", authenticate, getCart);
  * /cart/item:
  *   post:
  *     summary: Add an item to the cart
+ *     tags: [Cart]
  *     description: Add a new item into the current user's cart.
  *     requestBody:
  *       required: true
@@ -74,6 +83,7 @@ router.post("/item", authenticate, addCartItem);
  * /cart/item/{id}:
  *   patch:
  *     summary: Update a cart item
+ *     tags: [Cart]
  *     description: Update the quantity of an existing cart item.
  *     parameters:
  *       - in: path
@@ -116,6 +126,7 @@ router.patch("/item/:id", authenticate, updateCartItem);
  * /cart/item/{id}:
  *   delete:
  *     summary: Remove an item from the cart
+ *     tags: [Cart]
  *     description: Remove a specific item from the user's cart.
  *     parameters:
  *       - in: path
@@ -148,6 +159,7 @@ router.delete("/item/:id", authenticate, removeCartItem);
  * /cart/clear:
  *   delete:
  *     summary: Clear the entire cart
+ *     tags: [Cart]
  *     description: Remove all items from the current user's cart.
  *     responses:
  *       200:
