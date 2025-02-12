@@ -3,6 +3,7 @@ import prisma from "../lib/prisma";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
+import { generateRandomResetCode } from "../utils/generateRandomResetCode";
 
 const registerSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -32,6 +33,10 @@ const refreshSchema = z.object({
 
 const logoutSchema = z.object({
   refreshToken: z.string().min(1, { message: "Refresh token required" }),
+});
+
+const lostEmailSchema = z.object({
+  email: z.string().email({ message: "Provide a valid email address" }),
 });
 
 export const register = async (
@@ -148,6 +153,25 @@ export const logout = async (
     const { refreshToken } = logoutSchema.parse(req.body);
     await prisma.session.delete({ where: { refreshToken } });
     res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const lostEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = lostEmailSchema.parse(req.body);
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    const code = generateRandomResetCode();
+    res.status(200).json({ message: "Email sent", success: true, code });
   } catch (error) {
     next(error);
   }

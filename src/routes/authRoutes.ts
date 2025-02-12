@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   login,
   logout,
+  lostEmail,
   refresh,
   register,
 } from "../controllers/authControllers";
@@ -160,5 +161,44 @@ router.post("/refresh", refresh);
  *         description: Bad request, invalid input
  */
 router.post("/logout", logout);
+
+/**
+ * @swagger
+ * /auth/lost-email:
+ *   post:
+ *     summary: Send a reset code to the user's email
+ *     tags: [Auth]
+ *     description: Sends a reset code to the user's email if the email is registered.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: Email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 success:
+ *                   type: boolean
+ *                 code:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       400:
+ *         description: Bad request, invalid input
+ */
+router.post("/lost-email", lostEmail);
 
 export default router;
