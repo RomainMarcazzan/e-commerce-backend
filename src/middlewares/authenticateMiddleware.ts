@@ -18,13 +18,13 @@ export const authenticate = (
   // Expecting the token to be provided in the Authorization header as "Bearer <token>"
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(401).json({ error: "Authorization header missing" });
+    res.status(401).json({ message: "Authorization header missing" });
     return;
   }
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    res.status(401).json({ error: "Invalid authorization header format" });
+    res.status(401).json({ message: "Invalid authorization header format" });
     return;
   }
 
@@ -42,7 +42,7 @@ export const authenticate = (
       req.user = { id: (decoded as any).id, role: (decoded as any).role };
       next();
     } else {
-      res.status(401).json({ error: "Invalid token payload" });
+      res.status(401).json({ message: "Invalid token payload" });
       return;
     }
   } catch (error) {
