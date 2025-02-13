@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   login,
   logout,
+  lostCode,
   lostEmail,
   refresh,
   register,
@@ -200,5 +201,49 @@ router.post("/logout", logout);
  *         description: Bad request, invalid input
  */
 router.post("/lost-email", lostEmail);
+
+/**
+ * @swagger
+ * /auth/lost-code:
+ *   post:
+ *     summary: Reset password using reset code
+ *     tags: [Auth]
+ *     description: Resets the user's password using the provided reset code.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "user@example.com"
+ *               reset_code:
+ *                 type: string
+ *                 example: "123456"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "newsecurepassword"
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 success:
+ *                   type: boolean
+ *       404:
+ *         description: User not found
+ *       400:
+ *         description: Bad request, invalid input
+ */
+router.post("/lost-code", lostCode);
 
 export default router;

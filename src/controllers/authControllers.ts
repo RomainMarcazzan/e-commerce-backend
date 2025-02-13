@@ -39,6 +39,12 @@ const lostEmailSchema = z.object({
   email: z.string().email({ message: "Provide a valid email address" }),
 });
 
+const lostCodeSchema = z.object({
+  email: z.string().email({ message: "Provide a valid email address" }),
+  reset_code: z.string(),
+  password: z.string(),
+});
+
 export const register = async (
   req: Request,
   res: Response,
@@ -172,6 +178,31 @@ export const lostEmail = async (
     }
     const code = generateRandomResetCode();
     res.status(200).json({ message: "Email sent", success: true, code });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const lostCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { reset_code, password, email } = lostCodeSchema.parse(req.body);
+    const user = await prisma.user.findUnique({ where: { email, reset_code } });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword, reset_code: null },
+    });
+    res
+      .status(200)
+      .json({ message: "Password reset successfully", success: true });
   } catch (error) {
     next(error);
   }
