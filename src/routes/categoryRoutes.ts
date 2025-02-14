@@ -6,6 +6,7 @@ import {
   deleteCategory,
   getCategories,
 } from "../controllers/categoryControllers";
+import { authenticate } from "../middlewares/authenticateMiddleware";
 
 const router = Router();
 
@@ -109,7 +110,7 @@ router.get("/:id", getCategoryById);
  *       400:
  *         description: Invalid input
  */
-router.post("/", createCategory);
+router.post("/", authenticate, createCategory);
 
 /**
  * @swagger
@@ -152,7 +153,7 @@ router.post("/", createCategory);
  *       404:
  *         description: Category not found
  */
-router.patch("/:id", updateCategory);
+router.patch("/:id", authenticate, updateCategory);
 
 /**
  * @swagger
@@ -185,6 +186,6 @@ router.patch("/:id", updateCategory);
  *       404:
  *         description: Category not found
  */
-router.delete("/:id", deleteCategory);
+router.delete("/:id", authenticate, deleteCategory);
 
 export default router;

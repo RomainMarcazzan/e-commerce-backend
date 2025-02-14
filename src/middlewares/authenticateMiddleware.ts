@@ -29,13 +29,20 @@ export const authenticate = (
   }
 
   const token = parts[1];
+  console.log("*** token ***", token);
 
   try {
     // Validate the token format using zod (optional)
     tokenSchema.parse(token);
 
-    // Verify the token and extract the payload
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    let decoded: unknown;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET!);
+      console.log("*** decoded ***", JSON.stringify(decoded, null, 2));
+    } catch (verifyError: any) {
+      res.status(401).json({ message: "Invalid or expired token" });
+      return;
+    }
 
     // Assuming the JWT payload has an "id" and optionally a "role" property.
     if (typeof decoded === "object" && decoded?.hasOwnProperty("id")) {
@@ -45,7 +52,8 @@ export const authenticate = (
       res.status(401).json({ message: "Invalid token payload" });
       return;
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Handle errors from tokenSchema.parse or any unexpected issues
     next(error);
   }
 };

@@ -66,7 +66,7 @@ export const register = async (
     const accessToken = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET!,
-      { expiresIn: "15m" }
+      { expiresIn: "1m" }
     );
     const refreshToken = jwt.sign(
       { id: user.id },
@@ -101,7 +101,7 @@ export const login = async (
     const accessToken = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET!,
-      { expiresIn: "15m" }
+      { expiresIn: "1m" }
     );
     const refreshToken = jwt.sign(
       { id: user.id },
