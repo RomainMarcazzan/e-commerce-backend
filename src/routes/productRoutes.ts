@@ -21,9 +21,20 @@ const router = Router();
  * @swagger
  * /product:
  *   get:
- *     summary: Retrieve a list of products
+ *     summary: Retrieve a paginated list of products
  *     tags: [Products]
- *     description: Get a list of all products.
+ *     description: Get a list of products with pagination. Use query parameters "page" and "limit" to control pagination.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *         description: Page number (default is 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *         description: Items per page (default is 10)
  *     responses:
  *       200:
  *         description: A list of products retrieved successfully

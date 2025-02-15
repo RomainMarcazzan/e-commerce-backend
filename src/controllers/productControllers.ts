@@ -15,6 +15,12 @@ const createProductSchema = z.object({
 
 const updateProductSchema = createProductSchema.partial();
 
+// Updated schema for query parameters to coerce strings to numbers
+const getProductsQuerySchema = z.object({
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(10),
+});
+
 export const createProduct = async (
   req: Request,
   res: Response,
@@ -85,7 +91,9 @@ export const getProducts = async (
   next: NextFunction
 ) => {
   try {
-    const products = await prisma.product.findMany();
+    const { page, limit } = getProductsQuerySchema.parse(req.query);
+    const skip = (page - 1) * limit;
+    const products = await prisma.product.findMany({ skip, take: limit });
     res
       .status(200)
       .json({ message: "Products retrieved successfully", products });
