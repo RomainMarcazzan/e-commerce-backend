@@ -14,6 +14,12 @@ const createReviewSchema = z.object({
 
 const updateReviewSchema = createReviewSchema.partial();
 
+// New query schema for pagination in reviews
+const getReviewsQuerySchema = z.object({
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(10),
+});
+
 export const createReview = async (
   req: Request,
   res: Response,
@@ -81,8 +87,12 @@ export const getReviews = async (
   next: NextFunction
 ) => {
   try {
-    const reviews = await prisma.review.findMany();
-
+    const { page, limit } = getReviewsQuerySchema.parse(req.query);
+    const skip = (page - 1) * limit;
+    const reviews = await prisma.review.findMany({
+      skip,
+      take: limit,
+    });
     res
       .status(200)
       .json({ message: "Reviews retrieved successfully", reviews });

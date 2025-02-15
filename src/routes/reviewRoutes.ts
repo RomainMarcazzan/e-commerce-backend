@@ -21,12 +21,24 @@ const router = Router();
  * @swagger
  * /review:
  *   get:
- *     summary: Retrieve a list of reviews
+ *     summary: Retrieve a paginated list of reviews
  *     tags: [Reviews]
- *     description: Get a list of all reviews.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *           default: 10
+ *         description: Number of reviews per page.
  *     responses:
  *       200:
- *         description: A list of reviews retrieved successfully
+ *         description: A paginated list of reviews retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -41,7 +53,7 @@ const router = Router();
  *       401:
  *         description: User not authenticated
  */
-router.get("/", getReviews);
+router.get("/", authenticate, getReviews);
 
 /**
  * @swagger
@@ -74,7 +86,7 @@ router.get("/", getReviews);
  *       404:
  *         description: Review not found
  */
-router.get("/:id", getReviewById);
+router.get("/:id", authenticate, getReviewById);
 
 /**
  * @swagger
