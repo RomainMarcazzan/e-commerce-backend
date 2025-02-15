@@ -7,6 +7,7 @@ import cartRoutes from "./routes/cartRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
+import paymentRoutes from "./routes/paymentRoutes"; // New import
 import { errorHandler } from "./middlewares/errorHandlerMiddleware";
 import { setupSwagger } from "./config/swagger";
 
@@ -26,6 +27,7 @@ app.use("/v1/cart", cartRoutes);
 app.use("/v1/category", categoryRoutes);
 app.use("/v1/product", productRoutes);
 app.use("/v1/review", reviewRoutes);
+app.use("/v1/payment", paymentRoutes); // Register payment routes
 
 setupSwagger(app);
 
