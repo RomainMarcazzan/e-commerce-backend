@@ -10,6 +10,11 @@ const updateCategorySchema = z.object({
   name: z.string().min(1, { message: "Category name is required" }),
 });
 
+const getCategoriesQuerySchema = z.object({
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(10),
+});
+
 export const createCategory = async (
   req: Request,
   res: Response,
@@ -85,10 +90,13 @@ export const getCategories = async (
   next: NextFunction
 ) => {
   try {
-    const categories = await prisma.category.findMany();
-    res
-      .status(200)
-      .json({ message: "Categories retrieved successfully", categories });
+    const { page, limit } = getCategoriesQuerySchema.parse(req.query);
+    const skip = (page - 1) * limit;
+    const categories = await prisma.category.findMany({ skip, take: limit });
+    res.status(200).json({
+      message: "Categories retrieved successfully",
+      categories,
+    });
   } catch (error) {
     next(error);
   }

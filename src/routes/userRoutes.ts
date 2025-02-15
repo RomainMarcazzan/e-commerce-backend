@@ -21,18 +21,36 @@ const router = Router();
  * @swagger
  * /users:
  *   get:
- *     summary: Retrieve a list of users
+ *     summary: Retrieve a paginated list of users
  *     tags: [Users]
- *     description: Get a list of all users.
+ *     description: Get a paginated list of users. Use query parameters "page" and "limit" for pagination.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *           default: 10
+ *         description: Number of users per page.
  *     responses:
  *       200:
- *         description: A list of users retrieved successfully
+ *         description: A paginated list of users retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
  *       401:
  *         description: User not authenticated
  */

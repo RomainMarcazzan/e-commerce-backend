@@ -36,6 +36,11 @@ const createUserSchema = z.object({
     .optional(),
 });
 
+const getUsersQuerySchema = z.object({
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(10),
+});
+
 export const updateUser = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -130,7 +135,9 @@ export const getUsers = async (
   next: NextFunction
 ) => {
   try {
-    const users = await prisma.user.findMany();
+    const { page, limit } = getUsersQuerySchema.parse(req.query);
+    const skip = (page - 1) * limit;
+    const users = await prisma.user.findMany({ skip, take: limit });
     const usersWithoutPassword = users.map(({ password, ...rest }) => rest);
     res.status(200).json({
       message: "Users retrieved successfully",

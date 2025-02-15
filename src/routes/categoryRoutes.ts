@@ -21,12 +21,25 @@ const router = Router();
  * @swagger
  * /category:
  *   get:
- *     summary: Retrieve a list of categories
+ *     summary: Retrieve a paginated list of categories
  *     tags: [Categories]
- *     description: Get a list of all categories.
+ *     description: Get a paginated list of categories. Use query parameters "page" and "limit" for pagination.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *           default: 10
+ *         description: Number of categories per page.
  *     responses:
  *       200:
- *         description: A list of categories retrieved successfully
+ *         description: A paginated list of categories retrieved successfully
  *         content:
  *           application/json:
  *             schema:
