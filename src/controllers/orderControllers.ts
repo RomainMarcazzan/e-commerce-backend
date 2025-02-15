@@ -26,6 +26,12 @@ const updateOrderSchema = z.object({
   status: orderStatusSchema.optional(),
 });
 
+// New query schema for pagination
+const getOrdersQuerySchema = z.object({
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(10),
+});
+
 export const createOrder = async (
   req: Request,
   res: Response,
@@ -113,10 +119,13 @@ export const getOrders = async (
   next: NextFunction
 ) => {
   try {
+    const { page, limit } = getOrdersQuerySchema.parse(req.query);
+    const skip = (page - 1) * limit;
     const orders = await prisma.order.findMany({
+      skip,
+      take: limit,
       include: { items: true, payment: true },
     });
-
     res.status(200).json({ message: "Orders retrieved successfully", orders });
   } catch (error) {
     next(error);

@@ -21,12 +21,24 @@ const router = Router();
  * @swagger
  * /order:
  *   get:
- *     summary: Retrieve a list of orders
+ *     summary: Retrieve a paginated list of orders
  *     tags: [Orders]
- *     description: Get a list of all orders for the authenticated user.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *           default: 10
+ *         description: Number of orders per page.
  *     responses:
  *       200:
- *         description: A list of orders retrieved successfully
+ *         description: A paginated list of orders retrieved successfully
  *         content:
  *           application/json:
  *             schema:
