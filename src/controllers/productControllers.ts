@@ -10,8 +10,8 @@ const createProductSchema = z.object({
   description: z
     .string()
     .min(1, { message: "Product description is required" }),
-  price: z.number({ invalid_type_error: "Price must be a number" }),
-  stock: z.number({ invalid_type_error: "Stock must be a number" }),
+  price: z.coerce.number({ invalid_type_error: "Price must be a number" }), // Updated
+  stock: z.coerce.number({ invalid_type_error: "Stock must be a number" }), // Updated
   categoryId: z.string().min(1, { message: "Category ID is required" }),
 });
 
@@ -148,7 +148,22 @@ export const deleteProduct = async (
 ) => {
   try {
     const { id } = req.params;
-    const product = await prisma.product.delete({ where: { id } });
+    // Include related images when deleting the product
+    const product = await prisma.product.delete({
+      where: { id },
+      include: { images: true },
+    });
+    // Delete files from uploads folder
+    for (const image of product.images) {
+      const filePath = path.join(
+        __dirname,
+        "../../uploads",
+        path.basename(image.url)
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
     res.status(200).json({ message: "Product deleted successfully", product });
   } catch (error) {
     next(error);

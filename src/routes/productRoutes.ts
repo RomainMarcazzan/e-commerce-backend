@@ -139,13 +139,7 @@ router.get("/:id", getProductById);
  *       400:
  *         description: Invalid input
  */
-router.post(
-  "/",
-  authenticate,
-  authenticate,
-  upload.array("images", 10),
-  createProduct
-);
+router.post("/", authenticate, upload.array("images", 10), createProduct);
 
 /**
  * @swagger
@@ -205,13 +199,7 @@ router.post(
  *       404:
  *         description: Product not found
  */
-router.patch(
-  "/:id",
-  authenticate,
-  authenticate,
-  upload.array("images", 10),
-  updateProduct
-);
+router.patch("/:id", authenticate, upload.array("images", 10), updateProduct);
 
 /**
  * @swagger
