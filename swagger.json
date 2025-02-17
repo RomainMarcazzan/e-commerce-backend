@@ -212,6 +212,122 @@
         }
       }
     },
+    "/auth/lost-email": {
+      "post": {
+        "summary": "Send a reset code to the user's email",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Sends a reset code to the user's email if the email is registered.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid input"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/auth/lost-code": {
+      "post": {
+        "summary": "Reset password using reset code",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Resets the user's password using the provided reset code.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "reset_code": {
+                    "type": "string",
+                    "example": "123456"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "newsecurepassword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid input"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
     "/cart": {
       "get": {
         "summary": "Retrieve a user's cart",
@@ -433,14 +549,34 @@
     },
     "/category": {
       "get": {
-        "summary": "Retrieve a list of categories",
+        "summary": "Retrieve a paginated list of categories",
         "tags": [
           "Categories"
         ],
-        "description": "Get a list of all categories.",
+        "description": "Get a paginated list of categories. Use query parameters \"page\" and \"limit\" for pagination.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number",
+              "default": 10
+            },
+            "description": "Number of categories per page."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of categories retrieved successfully",
+            "description": "A paginated list of categories retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -667,14 +803,33 @@
     },
     "/order": {
       "get": {
-        "summary": "Retrieve a list of orders",
+        "summary": "Retrieve a paginated list of orders",
         "tags": [
           "Orders"
         ],
-        "description": "Get a list of all orders for the authenticated user.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number",
+              "default": 10
+            },
+            "description": "Number of orders per page."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of orders retrieved successfully",
+            "description": "A paginated list of orders retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -931,13 +1086,219 @@
         }
       }
     },
+    "/payment": {
+      "get": {
+        "summary": "Retrieve a paginated list of payments",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number",
+              "default": 10
+            },
+            "description": "Number of payments per page."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of payments retrieved successfully"
+          },
+          "401": {
+            "description": "User not authenticated"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new payment",
+        "tags": [
+          "Payments"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "type": "string",
+                    "example": "order123"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 150
+                  },
+                  "method": {
+                    "type": "string",
+                    "example": "CARD"
+                  },
+                  "stripePaymentIntentId": {
+                    "type": "string",
+                    "example": "pi_123"
+                  },
+                  "stripePaymentMethodId": {
+                    "type": "string",
+                    "example": "pm_123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment created successfully"
+          },
+          "401": {
+            "description": "User not authenticated"
+          }
+        }
+      }
+    },
+    "/payment/{id}": {
+      "get": {
+        "summary": "Retrieve a payment by ID",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment details retrieved successfully"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an existing payment",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "example": 175.5
+                  },
+                  "method": {
+                    "type": "string",
+                    "example": "CARD"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment updated successfully"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a payment by ID",
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment deleted successfully"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        }
+      }
+    },
     "/product": {
       "get": {
-        "summary": "Retrieve a list of products",
+        "summary": "Retrieve a paginated list of products",
         "tags": [
           "Products"
         ],
-        "description": "Get a list of all products.",
+        "description": "Get a list of products with pagination. Use query parameters \"page\" and \"limit\" to control pagination.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Page number (default is 1)"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Items per page (default is 10)"
+          }
+        ],
         "responses": {
           "200": {
             "description": "A list of products retrieved successfully",
@@ -974,7 +1335,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -998,9 +1359,12 @@
                     "type": "string",
                     "example": "category123"
                   },
-                  "imageUrl": {
-                    "type": "string",
-                    "example": "http://example.com/image.jpg"
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   }
                 }
               }
@@ -1100,7 +1464,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -1124,9 +1488,12 @@
                     "type": "string",
                     "example": "category123"
                   },
-                  "imageUrl": {
-                    "type": "string",
-                    "example": "http://example.com/updated-image.jpg"
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
                   }
                 }
               }
@@ -1207,14 +1574,33 @@
     },
     "/review": {
       "get": {
-        "summary": "Retrieve a list of reviews",
+        "summary": "Retrieve a paginated list of reviews",
         "tags": [
           "Reviews"
         ],
-        "description": "Get a list of all reviews.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number",
+              "default": 10
+            },
+            "description": "Number of reviews per page."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of reviews retrieved successfully",
+            "description": "A paginated list of reviews retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -1457,20 +1843,48 @@
     },
     "/users": {
       "get": {
-        "summary": "Retrieve a list of users",
+        "summary": "Retrieve a paginated list of users",
         "tags": [
           "Users"
         ],
-        "description": "Get a list of all users.",
+        "description": "Get a paginated list of users. Use query parameters \"page\" and \"limit\" for pagination.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number",
+              "default": 10
+            },
+            "description": "Number of users per page."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of users retrieved successfully",
+            "description": "A paginated list of users retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/User"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
                   }
                 }
               }
@@ -1727,6 +2141,10 @@
     {
       "name": "Orders",
       "description": "Order management and retrieval"
+    },
+    {
+      "name": "Payments",
+      "description": "Payment management and retrieval"
     },
     {
       "name": "Products",

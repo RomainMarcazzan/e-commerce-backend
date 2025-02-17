@@ -8,6 +8,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 import paymentRoutes from "./routes/paymentRoutes"; // New import
+import path from "path"; // add if not present
 import { errorHandler } from "./middlewares/errorHandlerMiddleware";
 import { setupSwagger } from "./config/swagger";
 
@@ -15,6 +16,9 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+// Serve uploaded images with the updated path
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/v1/health", async (req: Request, res: Response) => {
   res.send("API is running");

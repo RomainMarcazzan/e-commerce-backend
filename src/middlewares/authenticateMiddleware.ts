@@ -29,7 +29,7 @@ export const authenticate = (
   }
 
   const token = parts[1];
-  console.log("*** token ***", token);
+  //console.log("*** token ***", token);
 
   try {
     // Validate the token format using zod (optional)
@@ -38,7 +38,7 @@ export const authenticate = (
     let decoded: unknown;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET!);
-      console.log("*** decoded ***", JSON.stringify(decoded, null, 2));
+      //console.log("*** decoded ***", JSON.stringify(decoded, null, 2));
     } catch (verifyError: any) {
       res.status(401).json({ message: "Invalid or expired token" });
       return;

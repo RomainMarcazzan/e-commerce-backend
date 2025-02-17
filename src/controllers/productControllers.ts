@@ -87,6 +87,7 @@ export const createProduct = async (
           })),
         },
       },
+      include: { images: true },
     });
     res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
@@ -113,6 +114,7 @@ export const updateProduct = async (
           })),
         },
       },
+      include: { images: true },
     });
 
     res.status(200).json({ message: "Product updated successfully", product });
@@ -178,7 +180,11 @@ export const getProducts = async (
   try {
     const { page, limit } = getProductsQuerySchema.parse(req.query);
     const skip = (page - 1) * limit;
-    const products = await prisma.product.findMany({ skip, take: limit });
+    const products = await prisma.product.findMany({
+      skip,
+      take: limit,
+      include: { images: true },
+    });
     res
       .status(200)
       .json({ message: "Products retrieved successfully", products });
