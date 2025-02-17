@@ -5,6 +5,7 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  upload,
 } from "../controllers/productControllers";
 import { authenticate } from "../middlewares/authenticateMiddleware";
 
@@ -97,7 +98,7 @@ router.get("/:id", getProductById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -116,9 +117,11 @@ router.get("/:id", getProductById);
  *               categoryId:
  *                 type: string
  *                 example: "category123"
- *               imageUrl:
- *                 type: string
- *                 example: "http://example.com/image.jpg"
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -136,7 +139,13 @@ router.get("/:id", getProductById);
  *       400:
  *         description: Invalid input
  */
-router.post("/", authenticate, createProduct);
+router.post(
+  "/",
+  authenticate,
+  authenticate,
+  upload.array("images", 10),
+  createProduct
+);
 
 /**
  * @swagger
@@ -155,7 +164,7 @@ router.post("/", authenticate, createProduct);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -174,9 +183,11 @@ router.post("/", authenticate, createProduct);
  *               categoryId:
  *                 type: string
  *                 example: "category123"
- *               imageUrl:
- *                 type: string
- *                 example: "http://example.com/updated-image.jpg"
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -194,7 +205,13 @@ router.post("/", authenticate, createProduct);
  *       404:
  *         description: Product not found
  */
-router.patch("/:id", authenticate, updateProduct);
+router.patch(
+  "/:id",
+  authenticate,
+  authenticate,
+  upload.array("images", 10),
+  updateProduct
+);
 
 /**
  * @swagger
