@@ -15,7 +15,14 @@ const createProductSchema = z.object({
   categoryId: z.string().min(1, { message: "Category ID is required" }),
 });
 
-const updateProductSchema = createProductSchema.partial();
+const updateProductSchema = createProductSchema.partial().extend({
+  removedImageIds: z
+    .preprocess(
+      (val) => (typeof val === "string" ? [val] : val),
+      z.array(z.string())
+    )
+    .optional(),
+});
 
 const getProductsQuerySchema = z.object({
   page: z.coerce.number().default(1),
@@ -103,7 +110,35 @@ export const updateProduct = async (
   try {
     const { id } = req.params;
     const data = updateProductSchema.parse(req.body);
-    const files = Array.isArray(req.files) ? req.files : []; // Ensure files is defined
+    const files = Array.isArray(req.files) ? req.files : [];
+
+    // Process removed images if provided
+    if (data.removedImageIds && data.removedImageIds.length > 0) {
+      for (const imageId of data.removedImageIds) {
+        // Find the image record
+        const imageRecord = await prisma.productImage.findUnique({
+          where: { id: imageId },
+        });
+        if (imageRecord) {
+          // Delete the image file from disk
+          const filePath = path.join(
+            __dirname,
+            "../../uploads",
+            path.basename(imageRecord.url)
+          );
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+          // Remove image record from database
+          await prisma.productImage.delete({
+            where: { id: imageId },
+          });
+        }
+      }
+      // Remove removedImageIds from data to prevent invalid field in update.
+      delete data.removedImageIds;
+    }
+
     const product = await prisma.product.update({
       where: { id },
       data: {

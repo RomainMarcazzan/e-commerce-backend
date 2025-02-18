@@ -147,7 +147,7 @@ router.post("/", authenticate, upload.array("images", 10), createProduct);
  *   patch:
  *     summary: Update an existing product
  *     tags: [Products]
- *     description: Update the details of an existing product by its ID.
+ *     description: Update the details of an existing product by its ID. You can include an optional array 'removedImageIds' to remove certain images.
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,6 +182,11 @@ router.post("/", authenticate, upload.array("images", 10), createProduct);
  *                 items:
  *                   type: string
  *                   format: binary
+ *               removedImageIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of image IDs to remove.
  *     responses:
  *       200:
  *         description: Product updated successfully
