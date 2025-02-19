@@ -1,0 +1,677 @@
+openapi: 3.0.0
+info:
+  title: Ecommerce API
+  version: "1.0.0"
+  description: API documentation for the Ecommerce application
+servers:
+  - url: http://localhost:5000/v1
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                phoneNumber:
+                  type: string
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+      responses:
+        "201":
+          description: User registered successfully
+
+  /auth/login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: User successfully logged in
+
+  /auth/refresh:
+    post:
+      summary: Refresh authentication token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required:
+                - refreshToken
+      responses:
+        "200":
+          description: Token refreshed successfully
+
+  /auth/logout:
+    post:
+      summary: Log out a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required:
+                - refreshToken
+      responses:
+        "200":
+          description: User logged out successfully
+
+  /auth/lost-email:
+    post:
+      summary: Send reset code via email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        "200":
+          description: Reset code sent
+
+  /auth/lost-code:
+    post:
+      summary: Reset password using reset code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                reset_code:
+                  type: string
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - reset_code
+                - password
+      responses:
+        "200":
+          description: Password reset successfully
+
+  /user:
+    get:
+      summary: Retrieve paginated list of users
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: number
+          description: Items per page
+      responses:
+        "200":
+          description: A list of users
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... user properties ...
+      responses:
+        "201":
+          description: User created successfully
+
+  /user/{id}:
+    get:
+      summary: Retrieve a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User details retrieved successfully
+    patch:
+      summary: Update an existing user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... updatable user properties ...
+      responses:
+        "200":
+          description: User updated successfully
+    delete:
+      summary: Delete a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User deleted successfully
+
+  /order:
+    get:
+      summary: Retrieve paginated list of orders
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        "200":
+          description: A list of orders
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... order properties ...
+      responses:
+        "201":
+          description: Order created successfully
+
+  /order/{id}:
+    get:
+      summary: Retrieve an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details retrieved successfully
+    patch:
+      summary: Update an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... updatable order properties ...
+      responses:
+        "200":
+          description: Order updated successfully
+    delete:
+      summary: Delete an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order deleted successfully
+
+  /cart:
+    get:
+      summary: Retrieve user's cart
+      responses:
+        "200":
+          description: Cart details retrieved successfully
+
+  /cart/item:
+    post:
+      summary: Add an item to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: number
+              required:
+                - productId
+                - quantity
+      responses:
+        "201":
+          description: Cart item added successfully
+
+  /cart/item/{id}:
+    patch:
+      summary: Update a cart item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+              required:
+                - quantity
+      responses:
+        "200":
+          description: Cart item updated successfully
+    delete:
+      summary: Remove a cart item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart item removed successfully
+
+  /cart/clear:
+    delete:
+      summary: Clear the entire cart
+      responses:
+        "200":
+          description: Cart cleared successfully
+
+  /category:
+    get:
+      summary: Retrieve paginated list of categories
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        "200":
+          description: A list of categories
+    post:
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        "201":
+          description: Category created successfully
+
+  /category/{id}:
+    get:
+      summary: Retrieve a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Category details retrieved successfully
+    patch:
+      summary: Update an existing category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        "200":
+          description: Category updated successfully
+    delete:
+      summary: Delete a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Category deleted successfully
+
+  /product:
+    get:
+      summary: Retrieve paginated list of products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        "200":
+          description: A list of products
+    post:
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              # ... product properties including images ...
+      responses:
+        "201":
+          description: Product created successfully
+
+  /product/{id}:
+    get:
+      summary: Retrieve a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product details retrieved successfully
+    patch:
+      summary: Update an existing product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              # ... updatable product properties ...
+      responses:
+        "200":
+          description: Product updated successfully
+    delete:
+      summary: Delete a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product deleted successfully
+
+  /review:
+    get:
+      summary: Retrieve paginated list of reviews
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        "200":
+          description: A list of reviews
+    post:
+      summary: Create a new review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                productId:
+                  type: string
+                rating:
+                  type: number
+                comment:
+                  type: string
+              required:
+                - userId
+                - productId
+                - rating
+                - comment
+      responses:
+        "201":
+          description: Review created successfully
+
+  /review/{id}:
+    get:
+      summary: Retrieve a review by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Review details retrieved successfully
+    patch:
+      summary: Update an existing review
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+                comment:
+                  type: string
+      responses:
+        "200":
+          description: Review updated successfully
+    delete:
+      summary: Delete a review by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Review deleted successfully
+
+  /payment:
+    get:
+      summary: Retrieve paginated list of payments
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        "200":
+          description: A list of payments
+    post:
+      summary: Create a new payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+                amount:
+                  type: number
+                method:
+                  type: string
+                stripePaymentIntentId:
+                  type: string
+                stripePaymentMethodId:
+                  type: string
+              required:
+                - orderId
+                - amount
+                - method
+      responses:
+        "201":
+          description: Payment created successfully
+
+  /payment/{id}:
+    get:
+      summary: Retrieve a payment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment details retrieved successfully
+    patch:
+      summary: Update an existing payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                method:
+                  type: string
+      responses:
+        "200":
+          description: Payment updated successfully
+    delete:
+      summary: Delete a payment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment deleted successfully
