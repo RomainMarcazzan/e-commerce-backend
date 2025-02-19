@@ -165,7 +165,10 @@ export const getProductById = async (
 ) => {
   try {
     const { id } = req.params;
-    const product = await prisma.product.findUnique({ where: { id } });
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: { images: true }, // <-- include product images
+    });
     if (!product) {
       res.status(404).json({ message: "Product not found" });
       return;
