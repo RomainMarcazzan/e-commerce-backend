@@ -1,6 +1,11 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: "1.0.0"
 paths:
   /product:
     get:
+      tags: [Product]
       summary: Retrieve paginated list of products
       parameters:
         - in: query
@@ -59,6 +64,7 @@ paths:
                                 type: number
                                 example: 1
     post:
+      tags: [Product]
       summary: Create a new product
       requestBody:
         required: true
@@ -144,6 +150,7 @@ paths:
                               example: 1
   /product/{id}:
     get:
+      tags: [Product]
       summary: Retrieve a product by ID
       parameters:
         - in: path
@@ -196,6 +203,7 @@ paths:
                               type: number
                               example: 1
     patch:
+      tags: [Product]
       summary: Update an existing product
       parameters:
         - in: path
@@ -291,6 +299,7 @@ paths:
                               type: number
                               example: 2
     delete:
+      tags: [Product]
       summary: Delete a product by ID
       parameters:
         - in: path

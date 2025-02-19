@@ -21,7 +21,7 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/v1/health", async (req: Request, res: Response) => {
-  res.send("API is running");
+  res.send("API is running !");
 });
 
 app.use("/v1/auth", authRoutes);
