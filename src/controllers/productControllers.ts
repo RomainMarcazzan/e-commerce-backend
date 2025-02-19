@@ -23,8 +23,18 @@ const updateProductSchema = createProductSchema.partial().extend({
     )
     .optional(),
   imagesOrder: z
-    .array(z.object({ id: z.string(), order: z.number() }))
-    .optional(), // new field
+    .preprocess((val) => {
+      if (Array.isArray(val)) {
+        return val.map((item) =>
+          typeof item === "string" ? JSON.parse(item) : item
+        );
+      }
+      if (typeof val === "string") {
+        return [JSON.parse(val)];
+      }
+      return val;
+    }, z.array(z.object({ id: z.string(), order: z.number() })))
+    .optional(),
 });
 
 const getProductsQuerySchema = z.object({
@@ -118,12 +128,10 @@ export const updateProduct = async (
     // Process removed images if provided
     if (data.removedImageIds && data.removedImageIds.length > 0) {
       for (const imageId of data.removedImageIds) {
-        // Find the image record
         const imageRecord = await prisma.productImage.findUnique({
           where: { id: imageId },
         });
         if (imageRecord) {
-          // Delete the image file from disk
           const filePath = path.join(
             __dirname,
             "../../uploads",
@@ -132,33 +140,34 @@ export const updateProduct = async (
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }
-          // Remove image record from database
-          await prisma.productImage.delete({
-            where: { id: imageId },
-          });
+          await prisma.productImage.delete({ where: { id: imageId } });
         }
       }
-      // Remove removedImageIds from data to prevent invalid field in update.
       delete data.removedImageIds;
     }
 
-    // Update the product and create new images if sent.
+    // Destructure imagesOrder and categoryId from data so they're not spread into product update
+    const { categoryId, imagesOrder, ...restData } = data;
+    // Build update data: include new category connection if categoryId is provided
+    const updateData = {
+      ...restData,
+      ...(categoryId ? { category: { connect: { id: categoryId } } } : {}),
+      images: {
+        create: files.map((file: Express.Multer.File) => ({
+          url: `/uploads/${file.filename}`,
+        })),
+      },
+    };
+
     const product = await prisma.product.update({
       where: { id },
-      data: {
-        ...data,
-        images: {
-          create: files.map((file: Express.Multer.File) => ({
-            url: `/uploads/${file.filename}`,
-          })),
-        },
-      },
+      data: updateData,
       include: { images: true },
     });
 
-    // Process new image order if provided - update using "imageOrder"
-    if (data.imagesOrder && data.imagesOrder.length > 0) {
-      for (const { id: imgId, order } of data.imagesOrder) {
+    // Process new image order if provided - update using "imageOrder" in product images
+    if (imagesOrder && imagesOrder.length > 0) {
+      for (const { id: imgId, order } of imagesOrder) {
         await prisma.productImage.update({
           where: { id: imgId },
           data: { imageOrder: order },
