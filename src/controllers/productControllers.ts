@@ -22,6 +22,9 @@ const updateProductSchema = createProductSchema.partial().extend({
       z.array(z.string())
     )
     .optional(),
+  imagesOrder: z
+    .array(z.object({ id: z.string(), order: z.number() }))
+    .optional(), // new field
 });
 
 const getProductsQuerySchema = z.object({
@@ -139,6 +142,7 @@ export const updateProduct = async (
       delete data.removedImageIds;
     }
 
+    // Update the product and create new images if sent.
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -151,6 +155,16 @@ export const updateProduct = async (
       },
       include: { images: true },
     });
+
+    // Process new image order if provided - update using "imageOrder"
+    if (data.imagesOrder && data.imagesOrder.length > 0) {
+      for (const { id: imgId, order } of data.imagesOrder) {
+        await prisma.productImage.update({
+          where: { id: imgId },
+          data: { imageOrder: order },
+        });
+      }
+    }
 
     res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
@@ -167,7 +181,11 @@ export const getProductById = async (
     const { id } = req.params;
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { images: true }, // <-- include product images
+      include: {
+        images: {
+          orderBy: { imageOrder: "asc" }, // updated sort field
+        },
+      },
     });
     if (!product) {
       res.status(404).json({ message: "Product not found" });
@@ -219,8 +237,8 @@ export const getProducts = async (
     const { page, limit } = getProductsQuerySchema.parse(req.query);
     const skip = (page - 1) * limit;
     const products = await prisma.product.findMany({
-      skip,
       take: limit,
+      skip,
       include: { images: true },
     });
     res
