@@ -1,26 +1,28 @@
 openapi: 3.0.0
 info:
-  title: Auth API
+  title: Product API
   version: "1.0.0"
 paths:
   /product:
     get:
       tags: [Product]
       summary: Retrieve paginated list of products
+      description: >
+        Retrieves a list of products with pagination. Query parameters "page" and "limit" are used to paginate the results.
       parameters:
         - in: query
           name: page
           schema:
             type: number
-          description: Page number
+          description: Page number (default is 1)
         - in: query
           name: limit
           schema:
             type: number
-          description: Items per page
+          description: Number of items per page (default is 10)
       responses:
         "200":
-          description: A list of products retrieved successfully
+          description: Products retrieved successfully.
           content:
             application/json:
               schema:
@@ -57,15 +59,29 @@ paths:
                           items:
                             type: object
                             properties:
+                              id:
+                                type: string
+                                example: "img123"
                               url:
                                 type: string
                                 example: "/uploads/12345.png"
                               imageOrder:
                                 type: number
                                 example: 1
+                              createdAt:
+                                type: string
+                                format: date-time
+                                example: "2023-10-05T08:20:30Z"
+                              updatedAt:
+                                type: string
+                                format: date-time
+                                example: "2023-10-05T10:20:30Z"
     post:
       tags: [Product]
       summary: Create a new product
+      description: >
+        Creates a new product. Accepts multipart/form-data for product details and image files.
+        The images are processed and stored with generated URLs.
       requestBody:
         required: true
         content:
@@ -75,30 +91,30 @@ paths:
               properties:
                 name:
                   type: string
-                  description: Product name
+                  description: Product name.
                   example: "New Product"
                 description:
                   type: string
-                  description: Product description
+                  description: Product description.
                   example: "Detailed description of product"
                 price:
                   type: number
-                  description: Product price
+                  description: Product price.
                   example: 99.99
                 stock:
                   type: number
-                  description: Available stock
+                  description: Available stock.
                   example: 100
                 categoryId:
                   type: string
-                  description: Category identifier
+                  description: Identifier of the product category.
                   example: "cat123"
                 images:
                   type: array
                   items:
                     type: string
                     format: binary
-                  description: Array of product images
+                  description: Array of image files to upload.
               required:
                 - name
                 - description
@@ -107,7 +123,7 @@ paths:
                 - categoryId
       responses:
         "201":
-          description: Product created successfully
+          description: Product created successfully.
           content:
             application/json:
               schema:
@@ -142,26 +158,39 @@ paths:
                         items:
                           type: object
                           properties:
+                            id:
+                              type: string
+                              example: "img123"
                             url:
                               type: string
                               example: "/uploads/12345.png"
                             imageOrder:
                               type: number
                               example: 1
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T08:20:30Z"
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T10:20:30Z"
   /product/{id}:
     get:
       tags: [Product]
       summary: Retrieve a product by ID
+      description: >
+        Retrieves detailed information for a single product identified by its ID.
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-          description: Product identifier
+          description: Unique identifier of the product.
       responses:
         "200":
-          description: Product details retrieved successfully
+          description: Product details retrieved successfully.
           content:
             application/json:
               schema:
@@ -196,22 +225,36 @@ paths:
                         items:
                           type: object
                           properties:
+                            id:
+                              type: string
+                              example: "img123"
                             url:
                               type: string
                               example: "/uploads/12345.png"
                             imageOrder:
                               type: number
                               example: 1
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T08:20:30Z"
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T10:20:30Z"
     patch:
       tags: [Product]
       summary: Update an existing product
+      description: >
+        Updates product information. Supports updating product details and managing images.
+        Use "removedImageIds" to delete images and "imagesOrder" to update the display order.
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-          description: Product identifier
+          description: Unique identifier of the product.
       requestBody:
         required: true
         content:
@@ -221,30 +264,30 @@ paths:
               properties:
                 name:
                   type: string
-                  description: Updated product name
+                  description: Updated product name.
                 description:
                   type: string
-                  description: Updated product description
+                  description: Updated product description.
                 price:
                   type: number
-                  description: Updated price
+                  description: Updated product price.
                 stock:
                   type: number
-                  description: Updated stock count
+                  description: Updated stock count.
                 categoryId:
                   type: string
-                  description: Updated category identifier
+                  description: Updated category identifier.
                 images:
                   type: array
                   items:
                     type: string
                     format: binary
-                  description: New product images to add
+                  description: New images to add.
                 removedImageIds:
                   type: array
                   items:
                     type: string
-                  description: IDs of images to remove
+                  description: IDs of images that should be removed.
                 imagesOrder:
                   type: array
                   items:
@@ -252,12 +295,14 @@ paths:
                     properties:
                       id:
                         type: string
+                        description: The id of the product image.
                       order:
                         type: number
-                  description: New order for product images
+                        description: The new order number for the image.
+                  description: New ordering data for product images.
       responses:
         "200":
-          description: Product updated successfully
+          description: Product updated successfully.
           content:
             application/json:
               schema:
@@ -292,25 +337,38 @@ paths:
                         items:
                           type: object
                           properties:
+                            id:
+                              type: string
+                              example: "img123"
                             url:
                               type: string
                               example: "/uploads/updated.png"
                             imageOrder:
                               type: number
                               example: 2
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T08:20:30Z"
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              example: "2023-10-05T10:20:30Z"
     delete:
       tags: [Product]
       summary: Delete a product by ID
+      description: >
+        Deletes a product and its associated images from the database and removes image files from the storage folder.
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-          description: Product identifier
+          description: Unique identifier of the product.
       responses:
         "200":
-          description: Product deleted successfully
+          description: Product deleted successfully.
           content:
             application/json:
               schema:

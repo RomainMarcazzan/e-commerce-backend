@@ -7,39 +7,60 @@ paths:
     post:
       tags: [Auth]
       summary: Register a new user
+      description: >
+        Registers a new user by validating input using specified validation rules. 
+        Passwords are hashed and tokens are generated (access token valid for 1 minute, refresh token for 7 days).
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              properties:
+                firstName:
+                  type: string
+                  description: User's first name.
+                lastName:
+                  type: string
+                  description: User's last name.
+                email:
+                  type: string
+                  format: email
+                  description: Must be unique.
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  description: At least six characters long.
+                phoneNumber:
+                  type: string
+                  description: Optional phone number in E.164 format.
               required:
                 - firstName
                 - lastName
                 - email
                 - password
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  format: password
-                  minLength: 6
-                phoneNumber:
-                  type: string
       responses:
         "201":
-          description: User registered successfully
-
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token.
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token.
   /auth/login:
     post:
       tags: [Auth]
       summary: Log in a user
+      description: >
+        Logs in a user by matching email and password with stored credentials. 
+        Generates a new access token (1 minute) and a refresh token (7 days).
       requestBody:
         required: true
         content:
@@ -53,17 +74,32 @@ paths:
                 email:
                   type: string
                   format: email
+                  description: User's email address.
                 password:
                   type: string
                   format: password
+                  minLength: 6
+                  description: User password.
       responses:
         "200":
-          description: User successfully logged in
-
+          description: User successfully logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token.
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token.
   /auth/refresh:
     post:
       tags: [Auth]
       summary: Refresh authentication token
+      description: >
+        Validates the provided refresh token and generates a new access token valid for 15 minutes.
       requestBody:
         required: true
         content:
@@ -75,14 +111,24 @@ paths:
               properties:
                 refreshToken:
                   type: string
+                  description: Refresh token provided during login.
       responses:
         "200":
-          description: Token refreshed successfully
-
+          description: Token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: New JWT access token.
   /auth/logout:
     post:
       tags: [Auth]
       summary: Log out a user
+      description: >
+        Invalidates the provided refresh token by deleting the associated session.
       requestBody:
         required: true
         content:
@@ -94,14 +140,25 @@ paths:
               properties:
                 refreshToken:
                   type: string
+                  description: Refresh token to be invalidated.
       responses:
         "200":
-          description: User logged out successfully
-
+          description: User logged out successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message.
   /auth/lost-email:
     post:
       tags: [Auth]
       summary: Send reset code via email
+      description: >
+        Initiates a password reset by sending a code to the user's email address. 
+        For demonstration, the code is returned in the response.
       requestBody:
         required: true
         content:
@@ -114,14 +171,30 @@ paths:
                 email:
                   type: string
                   format: email
+                  description: Registered user's email.
       responses:
         "200":
-          description: Reset code sent
-
+          description: Reset code sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message.
+                  success:
+                    type: boolean
+                  code:
+                    type: string
+                    description: The reset code for password reset.
   /auth/lost-code:
     post:
       tags: [Auth]
       summary: Reset password using reset code
+      description: >
+        Resets the user's password if the provided reset code and email match a valid user. 
+        The new password is hashed before being stored.
       requestBody:
         required: true
         content:
@@ -136,12 +209,25 @@ paths:
                 email:
                   type: string
                   format: email
+                  description: Registered user's email.
                 reset_code:
                   type: string
+                  description: Reset code received previously.
                 password:
                   type: string
                   format: password
                   minLength: 6
+                  description: New password.
       responses:
         "200":
-          description: Password reset successfully
+          description: Password reset successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message.
+                  success:
+                    type: boolean
