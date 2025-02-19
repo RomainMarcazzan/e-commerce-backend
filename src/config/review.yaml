@@ -1,6 +1,7 @@
 paths:
   /review:
     get:
+      tags: [Review]
       summary: Retrieve paginated list of reviews
       parameters:
         - in: query
@@ -15,6 +16,7 @@ paths:
         "200":
           description: A list of reviews
     post:
+      tags: [Review]
       summary: Create a new review
       requestBody:
         required: true
@@ -41,6 +43,7 @@ paths:
           description: Review created successfully
   /review/{id}:
     get:
+      tags: [Review]
       summary: Retrieve a review by ID
       parameters:
         - in: path
@@ -52,6 +55,7 @@ paths:
         "200":
           description: Review details retrieved successfully
     patch:
+      tags: [Review]
       summary: Update an existing review
       parameters:
         - in: path
@@ -74,6 +78,7 @@ paths:
         "200":
           description: Review updated successfully
     delete:
+      tags: [Review]
       summary: Delete a review by ID
       parameters:
         - in: path

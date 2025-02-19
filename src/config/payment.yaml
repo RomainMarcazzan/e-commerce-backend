@@ -1,87 +1,92 @@
 paths:
-/payment:
-  get:
-    summary: Retrieve paginated list of payments
-    parameters:
-      - in: query
-        name: page
-        schema:
-          type: number
-      - in: query
-        name: limit
-        schema:
-          type: number
-    responses:
-      "200":
-        description: A list of payments
-  post:
-    summary: Create a new payment
-    requestBody:
-      required: true
-      content:
-        application/json:
+  /payment:
+    get:
+      tags: [Payment]
+      summary: Retrieve paginated list of payments
+      parameters:
+        - in: query
+          name: page
           schema:
-            type: object
-            properties:
-              orderId:
-                type: string
-              amount:
-                type: number
-              method:
-                type: string
-              stripePaymentIntentId:
-                type: string
-              stripePaymentMethodId:
-                type: string
-            required:
-              - orderId
-              - amount
-              - method
-    responses:
-      "201":
-        description: Payment created successfully
-/payment/{id}:
-  get:
-    summary: Retrieve a payment by ID
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-    responses:
-      "200":
-        description: Payment details retrieved successfully
-  patch:
-    summary: Update an existing payment
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-    requestBody:
-      required: true
-      content:
-        application/json:
+            type: number
+        - in: query
+          name: limit
           schema:
-            type: object
-            properties:
-              amount:
-                type: number
-              method:
-                type: string
-    responses:
-      "200":
-        description: Payment updated successfully
-  delete:
-    summary: Delete a payment by ID
-    parameters:
-      - in: path
-        name: id
+            type: number
+      responses:
+        "200":
+          description: A list of payments
+    post:
+      tags: [Payment]
+      summary: Create a new payment
+      requestBody:
         required: true
-        schema:
-          type: string
-    responses:
-      "200":
-        description: Payment deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+                amount:
+                  type: number
+                method:
+                  type: string
+                stripePaymentIntentId:
+                  type: string
+                stripePaymentMethodId:
+                  type: string
+              required:
+                - orderId
+                - amount
+                - method
+      responses:
+        "201":
+          description: Payment created successfully
+  /payment/{id}:
+    get:
+      tags: [Payment]
+      summary: Retrieve a payment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment details retrieved successfully
+    patch:
+      tags: [Payment]
+      summary: Update an existing payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                method:
+                  type: string
+      responses:
+        "200":
+          description: Payment updated successfully
+    delete:
+      tags: [Payment]
+      summary: Delete a payment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment deleted successfully

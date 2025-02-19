@@ -1,12 +1,14 @@
 paths:
   /cart:
     get:
+      tags: [Cart]
       summary: Retrieve user's cart
       responses:
         "200":
           description: Cart details retrieved successfully
   /cart/item:
     post:
+      tags: [Cart]
       summary: Add an item to the cart
       requestBody:
         required: true
@@ -27,6 +29,7 @@ paths:
           description: Cart item added successfully
   /cart/item/{id}:
     patch:
+      tags: [Cart]
       summary: Update a cart item
       parameters:
         - in: path
@@ -49,6 +52,7 @@ paths:
         "200":
           description: Cart item updated successfully
     delete:
+      tags: [Cart]
       summary: Remove a cart item
       parameters:
         - in: path
@@ -61,6 +65,7 @@ paths:
           description: Cart item removed successfully
   /cart/clear:
     delete:
+      tags: [Cart]
       summary: Clear the entire cart
       responses:
         "200":

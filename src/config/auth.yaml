@@ -1,6 +1,7 @@
 paths:
   /auth/register:
     post:
+      tags: [Auth]
       summary: Register a new user
       requestBody:
         required: true
@@ -31,6 +32,7 @@ paths:
           description: User registered successfully
   /auth/login:
     post:
+      tags: [Auth]
       summary: Log in a user
       requestBody:
         required: true
@@ -53,6 +55,7 @@ paths:
           description: User successfully logged in
   /auth/refresh:
     post:
+      tags: [Auth]
       summary: Refresh authentication token
       requestBody:
         required: true
@@ -70,6 +73,7 @@ paths:
           description: Token refreshed successfully
   /auth/logout:
     post:
+      tags: [Auth]
       summary: Log out a user
       requestBody:
         required: true
@@ -87,6 +91,7 @@ paths:
           description: User logged out successfully
   /auth/lost-email:
     post:
+      tags: [Auth]
       summary: Send reset code via email
       requestBody:
         required: true
@@ -105,6 +110,7 @@ paths:
           description: Reset code sent
   /auth/lost-code:
     post:
+      tags: [Auth]
       summary: Reset password using reset code
       requestBody:
         required: true
