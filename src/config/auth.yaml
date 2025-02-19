@@ -1,3 +1,7 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: "1.0.0"
 paths:
   /auth/register:
     post:
@@ -9,6 +13,11 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
               properties:
                 firstName:
                   type: string
@@ -20,16 +29,13 @@ paths:
                 password:
                   type: string
                   format: password
+                  minLength: 6
                 phoneNumber:
                   type: string
-              required:
-                - firstName
-                - lastName
-                - email
-                - password
       responses:
         "201":
           description: User registered successfully
+
   /auth/login:
     post:
       tags: [Auth]
@@ -40,6 +46,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - password
               properties:
                 email:
                   type: string
@@ -47,12 +56,10 @@ paths:
                 password:
                   type: string
                   format: password
-              required:
-                - email
-                - password
       responses:
         "200":
           description: User successfully logged in
+
   /auth/refresh:
     post:
       tags: [Auth]
@@ -63,14 +70,15 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - refreshToken
               properties:
                 refreshToken:
                   type: string
-              required:
-                - refreshToken
       responses:
         "200":
           description: Token refreshed successfully
+
   /auth/logout:
     post:
       tags: [Auth]
@@ -81,14 +89,15 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - refreshToken
               properties:
                 refreshToken:
                   type: string
-              required:
-                - refreshToken
       responses:
         "200":
           description: User logged out successfully
+
   /auth/lost-email:
     post:
       tags: [Auth]
@@ -99,15 +108,16 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
               properties:
                 email:
                   type: string
                   format: email
-              required:
-                - email
       responses:
         "200":
           description: Reset code sent
+
   /auth/lost-code:
     post:
       tags: [Auth]
@@ -118,6 +128,10 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - reset_code
+                - password
               properties:
                 email:
                   type: string
@@ -127,10 +141,7 @@ paths:
                 password:
                   type: string
                   format: password
-              required:
-                - email
-                - reset_code
-                - password
+                  minLength: 6
       responses:
         "200":
           description: Password reset successfully
