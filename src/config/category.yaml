@@ -1,0 +1,154 @@
+/category:
+  get:
+    summary: Retrieve paginated list of categories
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: number
+      - in: query
+        name: limit
+        schema:
+          type: number
+    responses:
+      "200":
+        description: A list of categories
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Categories retrieved successfully"
+                categories:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "cat123"
+                      name:
+                        type: string
+                        example: "Electronics"
+  post:
+    summary: Create a new category
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+            required:
+              - name
+    responses:
+      "201":
+        description: Category created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Category created successfully"
+                category:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "cat123"
+                    name:
+                      type: string
+                      example: "Electronics"
+/category/{id}:
+  get:
+    summary: Retrieve a category by ID
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Category details retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Category retrieved successfully"
+                category:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "cat123"
+                    name:
+                      type: string
+                      example: "Electronics"
+  patch:
+    summary: Update an existing category
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+            required:
+              - name
+    responses:
+      "200":
+        description: Category updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Category updated successfully"
+                category:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "cat123"
+                    name:
+                      type: string
+                      example: "Updated Electronics"
+  delete:
+    summary: Delete a category by ID
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Category deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Category deleted successfully"

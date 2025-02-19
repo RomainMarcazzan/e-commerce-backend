@@ -1,0 +1,67 @@
+paths:
+  /cart:
+    get:
+      summary: Retrieve user's cart
+      responses:
+        "200":
+          description: Cart details retrieved successfully
+  /cart/item:
+    post:
+      summary: Add an item to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: number
+              required:
+                - productId
+                - quantity
+      responses:
+        "201":
+          description: Cart item added successfully
+  /cart/item/{id}:
+    patch:
+      summary: Update a cart item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+              required:
+                - quantity
+      responses:
+        "200":
+          description: Cart item updated successfully
+    delete:
+      summary: Remove a cart item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart item removed successfully
+  /cart/clear:
+    delete:
+      summary: Clear the entire cart
+      responses:
+        "200":
+          description: Cart cleared successfully

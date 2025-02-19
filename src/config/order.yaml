@@ -1,0 +1,71 @@
+paths:
+  /order:
+    get:
+      summary: Retrieve paginated list of orders
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: number
+          description: Items per page
+      responses:
+        "200":
+          description: A list of orders
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... order properties schema ...
+      responses:
+        "201":
+          description: Order created successfully
+  /order/{id}:
+    get:
+      summary: Retrieve an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details retrieved successfully
+    patch:
+      summary: Update an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # ... updatable order properties schema ...
+      responses:
+        "200":
+          description: Order updated successfully
+    delete:
+      summary: Delete an order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order deleted successfully
