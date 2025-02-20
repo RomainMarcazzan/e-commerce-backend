@@ -40,6 +40,7 @@ const updateProductSchema = createProductSchema.partial().extend({
 const getProductsQuerySchema = z.object({
   page: z.coerce.number().default(1),
   limit: z.coerce.number().default(10),
+  search: z.string().optional(), // <-- added search
 });
 
 const allowedMimeTypes = ["image/jpeg", "image/png"];
@@ -243,11 +244,21 @@ export const getProducts = async (
   next: NextFunction
 ) => {
   try {
-    const { page, limit } = getProductsQuerySchema.parse(req.query);
+    const { page, limit, search } = getProductsQuerySchema.parse(req.query);
     const skip = (page - 1) * limit;
+    // Build filtering conditions: search in name or description.
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }
+      : {};
     const products = await prisma.product.findMany({
-      take: limit,
+      where,
       skip,
+      take: limit,
       include: { images: true },
     });
     res
