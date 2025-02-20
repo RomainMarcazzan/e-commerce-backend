@@ -1,10 +1,9 @@
-// Request interfaces
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  phoneNumber?: string; // optional, as not required in yaml
+  phoneNumber?: string;
 }
 
 export interface LoginRequest {
@@ -30,18 +29,18 @@ export interface LostCodeRequest {
   password: string;
 }
 
-// Response interfaces
-export interface AuthTokensResponse {
+export interface RefreshResponse {
+  accessToken: string;
+}
+
+export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
 }
 
 export interface RegisterResponse {
-  message: string;
-}
-
-export interface RefreshResponse {
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface LogoutResponse {
