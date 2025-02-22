@@ -2,6 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import { z } from "zod";
 import prisma from "../lib/prisma";
 import { AuthenticatedRequest } from "../middlewares/authenticateMiddleware";
+import { Prisma } from "@prisma/client";
 
 const updateUserSchema = z.object({
   firstName: z
@@ -39,6 +40,7 @@ const createUserSchema = z.object({
 const getUsersQuerySchema = z.object({
   page: z.coerce.number().default(1),
   limit: z.coerce.number().default(10),
+  search: z.string().optional(),
 });
 
 export const updateUser = async (
@@ -135,9 +137,28 @@ export const getUsers = async (
   next: NextFunction
 ) => {
   try {
-    const { page, limit } = getUsersQuerySchema.parse(req.query);
+    const { page, limit, search } = getUsersQuerySchema.parse(req.query);
     const skip = (page - 1) * limit;
-    const users = await prisma.user.findMany({ skip, take: limit });
+    const where = search
+      ? {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
+          ],
+        }
+      : {};
+    const users = await prisma.user.findMany({ where, skip, take: limit });
     const usersWithoutPassword = users.map(({ password, ...rest }) => rest);
     res.status(200).json({
       message: "Users retrieved successfully",

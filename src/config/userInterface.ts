@@ -7,12 +7,8 @@ export interface User {
   email: string;
   role: Role;
   phoneNumber?: string;
-  // Exclude sensitive fields such as password, reset_code, etc.
-  createdAt: string;
-  updatedAt: string;
 }
 
-// New request interfaces based on user.yaml
 export interface UserCreateRequest {
   firstName: string;
   lastName: string;
@@ -29,4 +25,14 @@ export interface UserUpdateRequest {
   password?: string;
   phoneNumber?: string;
   role?: Role;
+}
+
+export interface UserResponse {
+  message: string;
+  user: User;
+}
+
+export interface UsersResponse {
+  message: string;
+  users: User[];
 }

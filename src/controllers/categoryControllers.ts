@@ -105,7 +105,7 @@ export const getCategories = async (
     const { page, limit, search } = getCategoriesQuerySchema.parse(req.query);
     const skip = (page - 1) * limit;
     const where = search
-      ? { name: { contains: search, mode: "insensitive" as const } } // <-- cast mode as const
+      ? { name: { contains: search, mode: Prisma.QueryMode.insensitive } } // <-- cast mode as const
       : {};
     const categories = await prisma.category.findMany({
       where,

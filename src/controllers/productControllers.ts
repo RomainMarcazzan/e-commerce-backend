@@ -4,6 +4,7 @@ import prisma from "../lib/prisma";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { Prisma } from "@prisma/client";
 
 const createProductSchema = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
@@ -250,8 +251,13 @@ export const getProducts = async (
     const where = search
       ? {
           OR: [
-            { name: { contains: search, mode: "insensitive" as const } },
-            { description: { contains: search, mode: "insensitive" as const } },
+            { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            {
+              description: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
           ],
         }
       : {};
