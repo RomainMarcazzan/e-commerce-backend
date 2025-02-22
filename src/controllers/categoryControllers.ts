@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import { z } from "zod";
 import prisma from "../lib/prisma";
+import { Prisma } from "@prisma/client"; // <-- added import
 
 const createCategorySchema = z.object({
   name: z.string().min(1, { message: "Category name is required" }),
@@ -27,7 +28,17 @@ export const createCategory = async (
     res
       .status(201)
       .json({ message: "Category created successfully", category });
-  } catch (error) {
+  } catch (error: any) {
+    // Handle unique constraint error from Prisma (code: P2002)
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      res
+        .status(400)
+        .json({ message: "Category with this name already exists" });
+      return;
+    }
     next(error);
   }
 };
