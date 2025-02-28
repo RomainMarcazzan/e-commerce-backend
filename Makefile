@@ -25,9 +25,11 @@ test:
 	npm test
 
 # New target to sequentially bring up Docker, wait for DB, run migrations, and start the backend
+# windows 	@timeout /T 5 /NOBREAK >nul
+
 dev:
 	$(MAKE) docker-up
-	@echo "Waiting for the database to initialize..."
-	@timeout /T 5 /NOBREAK >nul
+	@echo "Waiting for the database to initialize..."	
+	@sleep 5
 	$(MAKE) migrate
 	$(MAKE) start-backend
